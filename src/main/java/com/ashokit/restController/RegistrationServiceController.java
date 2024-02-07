@@ -24,7 +24,7 @@ public class RegistrationServiceController {
 	
 	@GetMapping("/register/{userEmail}")
 	public String uniqueEmail(@PathVariable String userEmail) {
-		System.out.println("**** To Find Unique Email******");
+		System.out.println("**** To Call uniqueEmail Method()");
 		boolean uniqueEmail = registrationService.uniqueEmail(userEmail);
 		if(uniqueEmail) {
 			return AppConstant.UNIQUE;
