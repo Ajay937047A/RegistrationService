@@ -27,6 +27,8 @@ import com.ashokit.utils.EmailUtils;
 
 @Service
 public class RegistrationImpl implements RegistrationService {
+	
+	private final String VIDEO_DIRECTORY = "C:\\Ajay\\Ashok IT\\JRTP\\JRTP";
 
 	@Autowired
 	private UserRepository userRepository;
@@ -165,6 +167,22 @@ public class RegistrationImpl implements RegistrationService {
 		}
 
 		return countriesMap;
+	}
+	
+	@Override
+	public List<String> listVideos() {
+
+		File videoPath = new File(VIDEO_DIRECTORY);
+		File[] listFiles = videoPath.listFiles((dir, name) -> name.endsWith(".mp4") || name.endsWith(".avi"));
+
+		ArrayList<String> videosName = new ArrayList<>();
+		if (listFiles != null) {
+			for (File file : listFiles) {
+				videosName.add(file.getName());
+
+			}
+		}
+		return videosName;
 	}
 
 }

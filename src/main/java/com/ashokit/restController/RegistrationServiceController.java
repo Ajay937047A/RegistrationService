@@ -17,6 +17,10 @@ import com.ashokit.service.RegistrationService;
 @RestController
 public class RegistrationServiceController {
 	
+	
+	private final String VIDEO_DIRECTORY = "C:\\Ajay\\Ashok IT\\JRTP\\JRTP";
+	private String FILE_PATH_ROOT = "C:\\Ajay\\Ashok IT\\";
+	
 	@Autowired
 	private RegistrationService registrationService;
 	
@@ -62,4 +66,47 @@ public class RegistrationServiceController {
 	public Map<Integer, String> getCountries(@PathVariable Integer stateId){
 		return registrationService.getCities(stateId);
 	}
+	
+	
+		@GetMapping("/images/{filename}")
+	public ResponseEntity<byte[]> getImage(@PathVariable("filename") String filename) {
+		byte[] image = new byte[0];
+		try {
+			image = FileUtils.readFileToByteArray(new File(FILE_PATH_ROOT + filename));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(image);
+	}
+
+	
+
+	@GetMapping("/videos/download/{fileName}")
+	public ResponseEntity<Resource> serveVideo(@PathVariable String fileName) {
+		try {
+			// Load file as Resource
+			Path videoPath = Paths.get(VIDEO_DIRECTORY).resolve(fileName);
+			Resource resource = new UrlResource(videoPath.toUri());
+
+			// Check if the file exists
+			if (resource.exists() || resource.isReadable()) {
+				return ResponseEntity.ok().contentType(MediaType.APPLICATION_OCTET_STREAM)
+						.header(HttpHeaders.CONTENT_DISPOSITION,
+								"attachment; filename=\"" + resource.getFilename() + "\"")
+						.body(resource);
+			} else {
+				return ResponseEntity.notFound().build();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return ResponseEntity.notFound().build();
+		}
+	}
+	
+	
+	@GetMapping("/videos")
+    public ResponseEntity<List<String>> listVideos() {
+        List<String> videoNames = registrationService.listVideos();
+        return ResponseEntity.ok().body(videoNames);
+    }
 }

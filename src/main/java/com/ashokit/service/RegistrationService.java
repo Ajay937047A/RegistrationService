@@ -16,5 +16,7 @@ public interface RegistrationService {
 	public Map<Integer, String> getStates(Integer countryId);
 	
 	public Map<Integer, String> getCities(Integer stateId);
+	
+	List<String> listVideos();
 
 }
